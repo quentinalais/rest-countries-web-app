@@ -82,7 +82,7 @@ function App() {
         );
       }
 
-      if (!favorite.includes(data.Country)) {
+      if (!favorite?.includes(data.Country)) {
         setfavorite((prev) => [...prev, data.Country]);
       }
 
@@ -110,8 +110,7 @@ function App() {
   };
 
   const [colDefs] = useState([
-    { field: "Country", filter: true },
-    { field: "Flag" },
+    { field: "Country", filter: true ,cellRenderer:(props)=><>{props.data.Flag} {props.data.Country}</>},
     { field: "Population" },
     { field: "Languages", filter: true },
     { field: "Currencies", filter: true },
