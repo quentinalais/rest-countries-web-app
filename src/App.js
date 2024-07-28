@@ -11,18 +11,17 @@ import Table from "./Components/Table";
 const API_URL = "https://restcountries.com/v3.1/all";
 
 function App() {
-  const favs = localStorage.getItem("favorite_countries")
-    ? JSON.parse(localStorage.getItem("favorite_countries"))
-    : []; // value that will initialise favorite 
+  
 
   const [countryClicked, setcountryClicked] = useState(null);
+  
   const [data, setdata] = useState(null); // Data holding countries result from API
   const [show, setShow] = useState(false); // Boolean value to show the modal
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const [favorite, setfavorite] = useState(favs);
+  
+  const [favorite, setfavorite] = useState(JSON.parse(localStorage.getItem("favorite_countries")));
 
   // Modal Handlers
   const handleClose = () => setShow(false);
@@ -53,7 +52,7 @@ function App() {
           Maps: country.maps.googleMaps,
           Official: country.name.official,
           Action: "h",
-          Favorites: favs.includes(country.name.common) ? "favorite" : "",
+          Favorites: JSON.parse(localStorage.getItem("favorite_countries")).includes(country.name.common) ? "favorite" : "",
         }));
         setdata(result);
         setLoading(false);
