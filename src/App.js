@@ -1,5 +1,5 @@
-import "ag-grid-community/styles/ag-grid.css"; 
-import "ag-grid-community/styles/ag-theme-quartz.css"; 
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-quartz.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useState } from "react";
 import { Alert, Button, Spinner } from "react-bootstrap";
@@ -11,17 +11,22 @@ import Table from "./Components/Table";
 const API_URL = "https://restcountries.com/v3.1/all";
 
 function App() {
-  
-
   const [countryClicked, setcountryClicked] = useState(null);
-  
+
   const [data, setdata] = useState(null); // Data holding countries result from API
   const [show, setShow] = useState(false); // Boolean value to show the modal
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
-  const [favorite, setfavorite] = useState(JSON.parse(localStorage.getItem("favorite_countries")));
+
+  const [favorite, setfavorite] = useState(() => {
+    if (!localStorage.getItem("favorite_countries")) {
+      localStorage.setItem("favorite_countries", JSON.stringify([]));
+      return [];
+    } else {
+      return JSON.parse(localStorage.getItem("favorite_countries"));
+    }
+  });
 
   // Modal Handlers
   const handleClose = () => setShow(false);
@@ -52,7 +57,11 @@ function App() {
           Maps: country.maps.googleMaps,
           Official: country.name.official,
           Action: "h",
-          Favorites: JSON.parse(localStorage.getItem("favorite_countries"))?.includes(country.name.common) ? "favorite" : "",
+          Favorites: JSON.parse(
+            localStorage.getItem("favorite_countries")
+          )?.includes(country.name.common)
+            ? "favorite"
+            : "",
         }));
         setdata(result);
         setLoading(false);
@@ -67,35 +76,28 @@ function App() {
   }, [favorite]);
 
   const handleFavorite = (props, data) => {
-    if (!localStorage.getItem("favorite_countries")) {
+    var previous = localStorage.getItem("favorite_countries");
+    previous = JSON.parse(previous);
+    if (!previous.includes(data.Country)) {
       localStorage.setItem(
         "favorite_countries",
-        JSON.stringify([data.Country])
+        JSON.stringify([...previous, data.Country])
       );
-    } else {
-      var previous = localStorage.getItem("favorite_countries");
-      previous = JSON.parse(previous);
-      if (!previous.includes(data.Country)) {
-        localStorage.setItem(
-          "favorite_countries",
-          JSON.stringify([...previous, data.Country])
-        );
-      }
+    }
 
-      if (!favorite?.includes(data.Country)) {
-        setfavorite((prev) => [...prev, data.Country]);
-      }
+    if (!favorite.includes(data.Country)) {
+      setfavorite((prev) => [...prev, data.Country]);
+    }
 
-      if (favorite.includes(data.Country)) {
-        setfavorite(favorite.filter((row) => row !== data.Country));
-      }
+    if (favorite.includes(data.Country)) {
+      setfavorite(favorite.filter((row) => row !== data.Country));
+    }
 
-      if (previous.includes(data.Country)) {
-        localStorage.setItem(
-          "favorite_countries",
-          JSON.stringify(previous.filter((row) => row !== data.Country))
-        );
-      }
+    if (previous.includes(data.Country)) {
+      localStorage.setItem(
+        "favorite_countries",
+        JSON.stringify(previous.filter((row) => row !== data.Country))
+      );
     }
   };
 
@@ -110,7 +112,15 @@ function App() {
   };
 
   const [colDefs] = useState([
-    { field: "Country", filter: true ,cellRenderer:(props)=><>{props.data.Flag} {props.data.Country}</>},
+    {
+      field: "Country",
+      filter: true,
+      cellRenderer: (props) => (
+        <>
+          {props.data.Flag} {props.data.Country}
+        </>
+      ),
+    },
     { field: "Population" },
     { field: "Languages", filter: true },
     { field: "Currencies", filter: true },
