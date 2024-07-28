@@ -12,7 +12,7 @@ Features
 --------
 
 1.  **Display Countries List**
-2.  **Search Functionality**
+2.  **Column Search, Global Search, Sort, Pagination Functionality**
 3.  **Country Details** (OnClick row table)
 4.  **Favorites Feature**
 6.  **Error Handling**
