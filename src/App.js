@@ -52,7 +52,7 @@ function App() {
           Maps: country.maps.googleMaps,
           Official: country.name.official,
           Action: "h",
-          Favorites: JSON.parse(localStorage.getItem("favorite_countries")).includes(country.name.common) ? "favorite" : "",
+          Favorites: JSON.parse(localStorage.getItem("favorite_countries"))?.includes(country.name.common) ? "favorite" : "",
         }));
         setdata(result);
         setLoading(false);
